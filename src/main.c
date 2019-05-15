@@ -4,6 +4,7 @@
 #include "hiwire.h"
 #include "js2python.h"
 #include "jsimport.h"
+#include "epiimport.h"
 #include "jsproxy.h"
 #include "pyimport.h"
 #include "pyproxy.h"
@@ -33,7 +34,7 @@ main(int argc, char** argv)
   }
   Py_DECREF(sys);
 
-  if (js2python_init() || JsImport_init() || JsProxy_init() ||
+  if (js2python_init() || JsImport_init() || EpiImport_init() || JsProxy_init() ||
       pyimport_init() || pyproxy_init() || python2js_init() ||
       runpython_init_js() || runpython_init_py() || runpython_finalize_js()) {
     return 1;

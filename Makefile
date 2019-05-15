@@ -60,7 +60,7 @@ all: build/pyodide.asm.js \
   build/webworker_dev.js
 
 
-build/pyodide.asm.js: src/main.bc src/jsimport.bc src/jsproxy.bc src/js2python.bc \
+build/pyodide.asm.js: src/main.bc src/jsimport.bc src/epiimport.bc src/jsproxy.bc src/js2python.bc \
 		src/pyimport.bc src/pyproxy.bc src/python2js.bc src/python2js_buffer.bc \
 		src/runpython.bc src/hiwire.bc
 	[ -d build ] || mkdir build
