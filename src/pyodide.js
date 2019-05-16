@@ -102,50 +102,50 @@ var languagePluginLoader = new Promise((resolve, reject) => {
     while (queue.length) {
       let package_uri = queue.pop();
 
-      const package = _uri_to_package_name(package_uri);
+      const _package = _uri_to_package_name(package_uri);
 
-      if (package == null) {
+      if (_package == null) {
         console.error(`Invalid package name or URI '${package_uri}'`);
         return;
-      } else if (package == package_uri) {
+      } else if (_package == package_uri) {
         package_uri = 'default channel';
       }
 
-      if (package in loadedPackages) {
-        if (package_uri != loadedPackages[package]) {
+      if (_package in loadedPackages) {
+        if (package_uri != loadedPackages[_package]) {
           console.error(`URI mismatch, attempting to load package ` +
-                        `${package} from ${package_uri} while it is already ` +
-                        `loaded from ${loadedPackages[package]}!`);
+                        `${_package} from ${package_uri} while it is already ` +
+                        `loaded from ${loadedPackages[_package]}!`);
           return;
         }
-      } else if (package in toLoad) {
-        if (package_uri != toLoad[package]) {
+      } else if (_package in toLoad) {
+        if (package_uri != toLoad[_package]) {
           console.error(`URI mismatch, attempting to load package ` +
-                        `${package} from ${package_uri} while it is already ` +
-                        `being loaded from ${toLoad[package]}!`);
+                        `${_package} from ${package_uri} while it is already ` +
+                        `being loaded from ${toLoad[_package]}!`);
           return;
         }
       } else {
-        console.log(`Loading ${package} from ${package_uri}`);
+        console.log(`Loading ${_package} from ${package_uri}`);
 
-        toLoad[package] = package_uri;
-        if (packages.hasOwnProperty(package)) {
-          packages[package].forEach((subpackage) => {
+        toLoad[_package] = package_uri;
+        if (packages.hasOwnProperty(_package)) {
+          packages[_package].forEach((subpackage) => {
             if (!(subpackage in loadedPackages) && !(subpackage in toLoad)) {
               queue.push(subpackage);
             }
           });
         } else {
-          console.error(`Unknown package '${package}'`);
+          console.error(`Unknown package '${_package}'`);
         }
       }
     }
 
     self.pyodide._module.locateFile = (path) => {
       // handle packages loaded from custom URLs
-      let package = path.replace(/\.data$/, "");
-      if (package in toLoad) {
-        let package_uri = toLoad[package];
+      let _package = path.replace(/\.data$/, "");
+      if (_package in toLoad) {
+        let package_uri = toLoad[_package];
         if (package_uri != 'default channel') {
           return package_uri.replace(/\.js$/, ".data");
         };
@@ -172,8 +172,8 @@ var languagePluginLoader = new Promise((resolve, reject) => {
       self.pyodide._module.monitorRunDependencies = () => {
         packageCounter--;
         if (packageCounter === 0) {
-          for (let package in toLoad) {
-            self.pyodide.loadedPackages[package] = toLoad[package];
+          for (let _package in toLoad) {
+            self.pyodide.loadedPackages[_package] = toLoad[_package];
           }
           delete self.pyodide._module.monitorRunDependencies;
           self.removeEventListener('error', windowErrorHandler);
@@ -196,11 +196,11 @@ var languagePluginLoader = new Promise((resolve, reject) => {
       };
       self.addEventListener('error', windowErrorHandler);
 
-      for (let package in toLoad) {
+      for (let _package in toLoad) {
         let scriptSrc;
-        let package_uri = toLoad[package];
+        let package_uri = toLoad[_package];
         if (package_uri == 'default channel') {
-          scriptSrc = `${baseURL}${package}.js`;
+          scriptSrc = `${baseURL}${_package}.js`;
         } else {
           scriptSrc = `${package_uri}`;
         }
@@ -209,7 +209,7 @@ var languagePluginLoader = new Promise((resolve, reject) => {
           // (so packageCounter will still hit 0 and finish loading), and remove
           // the package from toLoad so we don't mark it as loaded.
           console.error(`Couldn't load package from URL ${scriptSrc}`)
-          let index = toLoad.indexOf(package);
+          let index = toLoad.indexOf(_package);
           if (index !== -1) {
             toLoad.splice(index, 1);
           }
@@ -409,4 +409,4 @@ var languagePluginLoader = new Promise((resolve, reject) => {
     });
   }
 });
-languagePluginLoader
+export {languagePluginLoader};
