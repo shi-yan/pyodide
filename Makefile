@@ -149,7 +149,7 @@ build/test.data: $(CPYTHONLIB)
 	uglifyjs build/test.js -o build/test.js
 
 build/deploy:
-	rm -rf ../pyodide_build || true
+	rm -rf ../pyodide || true
 	cp -r build ../pyodide
 
 root/.built: \
