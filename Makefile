@@ -57,7 +57,8 @@ all: build/pyodide.asm.js \
   build/packages.json \
   build/test.html \
   build/webworker.js \
-  build/webworker_dev.js
+  build/webworker_dev.js \
+  build/deploy
 
 
 build/pyodide.asm.js: src/main.bc src/jsimport.bc src/epiimport.bc src/jsproxy.bc src/js2python.bc \
@@ -147,6 +148,9 @@ build/test.data: $(CPYTHONLIB)
   )
 	uglifyjs build/test.js -o build/test.js
 
+build/deploy:
+	rm -rf ../pyodide_build || true
+	cp -r build ../pyodide
 
 root/.built: \
 		$(CPYTHONLIB) \
