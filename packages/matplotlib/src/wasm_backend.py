@@ -453,10 +453,10 @@ class FigureCanvasWasm(backend_agg.FigureCanvasAgg):
 
 
 _FONTAWESOME_ICONS = {
-    'home': 'ivu-icon-md-home',
+    'home': 'ivu-icon-md-qr-scanner',
     'back': 'ivu-icon-md-arrow-round-back',
     'forward': 'ivu-icon-md-arrow-round-forward',
-    'zoom_to_rect': 'ivu-icon-md-contract',
+    'zoom_to_rect': 'ivu-icon-md-search',
     'move': 'ivu-icon-md-move',
     'download': 'ivu-icon-md-cloud-download',
     None: None,
