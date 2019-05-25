@@ -104,7 +104,9 @@ class FigureCanvasWasm(backend_agg.FigureCanvasAgg):
         # Designed to be overridden by subclasses for use in contexts other
         # than iodide.
         try:
-            return _ec.getDev('div')
+            import js
+            js.console.log(js.ec)
+            return js.ec.getDiv()
         except ImportError:
             import js
             js.console.log("can't create element")
@@ -124,7 +126,7 @@ class FigureCanvasWasm(backend_agg.FigureCanvasAgg):
         def ignore(event):
             event.preventDefault()
             return False
-        window.addEventListener('contextmenu', ignore)
+        #window.addEventListener('contextmenu', ignore)
 
         # Create the main canvas and determine the physical to logical pixel
         # ratio
