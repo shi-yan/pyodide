@@ -126,7 +126,7 @@ class FigureCanvasWasm(backend_agg.FigureCanvasAgg):
         def ignore(event):
             event.preventDefault()
             return False
-        #window.addEventListener('contextmenu', ignore)
+        window.addEventListener('contextmenu', ignore)
 
         # Create the main canvas and determine the physical to logical pixel
         # ratio
@@ -453,12 +453,12 @@ class FigureCanvasWasm(backend_agg.FigureCanvasAgg):
 
 
 _FONTAWESOME_ICONS = {
-    'home': 'fa-home',
-    'back': 'fa-arrow-left',
-    'forward': 'fa-arrow-right',
-    'zoom_to_rect': 'fa-search-plus',
-    'move': 'fa-arrows',
-    'download': 'fa-download',
+    'home': 'ivu-icon-md-home',
+    'back': 'ivu-icon-md-arrow-round-back',
+    'forward': 'ivu-icon-md-arrow-round-forward',
+    'zoom_to_rect': 'ivu-icon-md-contract',
+    'move': 'ivu-icon-md-move',
+    'download': 'ivu-icon-md-cloud-download',
     None: None,
 }
 
@@ -490,7 +490,7 @@ class NavigationToolbar2Wasm(backend_bases.NavigationToolbar2):
                     add_spacer()
                 else:
                     button = document.createElement('button')
-                    button.classList.add('fa')
+                    button.classList.add('ivu-icon')
                     button.classList.add(_FONTAWESOME_ICONS[image_file])
                     button.classList.add('matplotlib-toolbar-button')
                     button.addEventListener(
