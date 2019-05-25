@@ -103,50 +103,50 @@ var languagePluginLoader = new Promise((resolve, reject) => {
     while (queue.length) {
       let package_uri = queue.pop();
 
-      const _package = _uri_to_package_name(package_uri);
+      const pkg = _uri_to_package_name(package_uri);
 
-      if (_package == null) {
+      if (pkg == null) {
         console.error(`Invalid package name or URI '${package_uri}'`);
         return;
-      } else if (_package == package_uri) {
+      } else if (pkg == package_uri) {
         package_uri = 'default channel';
       }
 
-      if (_package in loadedPackages) {
-        if (package_uri != loadedPackages[_package]) {
+      if (pkg in loadedPackages) {
+        if (package_uri != loadedPackages[pkg]) {
           console.error(`URI mismatch, attempting to load package ` +
-                        `${_package} from ${package_uri} while it is already ` +
-                        `loaded from ${loadedPackages[_package]}!`);
+                        `${pkg} from ${package_uri} while it is already ` +
+                        `loaded from ${loadedPackages[pkg]}!`);
           return;
         }
-      } else if (_package in toLoad) {
-        if (package_uri != toLoad[_package]) {
+      } else if (pkg in toLoad) {
+        if (package_uri != toLoad[pkg]) {
           console.error(`URI mismatch, attempting to load package ` +
-                        `${_package} from ${package_uri} while it is already ` +
-                        `being loaded from ${toLoad[_package]}!`);
+                        `${pkg} from ${package_uri} while it is already ` +
+                        `being loaded from ${toLoad[pkg]}!`);
           return;
         }
       } else {
-        console.log(`Loading ${_package} from ${package_uri}`);
+        console.log(`Loading ${pkg} from ${package_uri}`);
 
-        toLoad[_package] = package_uri;
-        if (packages.hasOwnProperty(_package)) {
-          packages[_package].forEach((subpackage) => {
+        toLoad[pkg] = package_uri;
+        if (packages.hasOwnProperty(pkg)) {
+          packages[pkg].forEach((subpackage) => {
             if (!(subpackage in loadedPackages) && !(subpackage in toLoad)) {
               queue.push(subpackage);
             }
           });
         } else {
-          console.error(`Unknown package '${_package}'`);
+          console.error(`Unknown package '${pkg}'`);
         }
       }
     }
 
     self.pyodide._module.locateFile = (path) => {
       // handle packages loaded from custom URLs
-      let _package = path.replace(/\.data$/, "");
-      if (_package in toLoad) {
-        let package_uri = toLoad[_package];
+      let pkg = path.replace(/\.data$/, "");
+      if (pkg in toLoad) {
+        let package_uri = toLoad[pkg];
         if (package_uri != 'default channel') {
           return package_uri.replace(/\.js$/, ".data");
         };
@@ -173,8 +173,8 @@ var languagePluginLoader = new Promise((resolve, reject) => {
       self.pyodide._module.monitorRunDependencies = () => {
         packageCounter--;
         if (packageCounter === 0) {
-          for (let _package in toLoad) {
-            self.pyodide.loadedPackages[_package] = toLoad[_package];
+          for (let pkg in toLoad) {
+            self.pyodide.loadedPackages[pkg] = toLoad[pkg];
           }
           delete self.pyodide._module.monitorRunDependencies;
           self.removeEventListener('error', windowErrorHandler);
@@ -197,11 +197,11 @@ var languagePluginLoader = new Promise((resolve, reject) => {
       };
       self.addEventListener('error', windowErrorHandler);
 
-      for (let _package in toLoad) {
+      for (let pkg in toLoad) {
         let scriptSrc;
-        let package_uri = toLoad[_package];
+        let package_uri = toLoad[pkg];
         if (package_uri == 'default channel') {
-          scriptSrc = `${baseURL}${_package}.js`;
+          scriptSrc = `${baseURL}${pkg}.js`;
         } else {
           scriptSrc = `${package_uri}`;
         }
@@ -210,7 +210,7 @@ var languagePluginLoader = new Promise((resolve, reject) => {
           // (so packageCounter will still hit 0 and finish loading), and remove
           // the package from toLoad so we don't mark it as loaded.
           console.error(`Couldn't load package from URL ${scriptSrc}`)
-          let index = toLoad.indexOf(_package);
+          let index = toLoad.indexOf(pkg);
           if (index !== -1) {
             toLoad.splice(index, 1);
           }
